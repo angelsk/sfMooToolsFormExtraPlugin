@@ -3,7 +3,7 @@
   <name>sfMooToolsFormExtraPlugin</name>
   <channel>plugins.symfony-project.org</channel>
   <summary>Symfony widgets for use with the MooTools javascript framework</summary>
-  <description>This plugin contains several widgets (and a validator) for use with the MooTools (http://mootools.net/) javascript framework.</description>
+  <description>This plugin contains several widgets and validators for use with the MooTools (http://mootools.net/) javascript framework.</description>
   <lead>
     <name>Jo Carter</name>
     <user>angelsk</user>
@@ -16,9 +16,9 @@
     <email>benlancaster@holler.co.uk</email>
     <active>yes</active>
   </developer>
-  <date>2011-10-06</date>
+  <date>2012-06-27</date>
   <version>
-    <release>1.1.0</release>
+    <release>1.4.0</release>
     <api>1.0.0</api>
   </version>
   <stability>
@@ -37,10 +37,14 @@
       </dir>
       <dir name="docs">
         <dir name="images">
+          <file role="data" name="array_validator.png" />
+          <file role="data" name="autocomplete.png" />
+          <file role="data" name="colourpicker.png" />
           <file role="data" name="datepicker_date.png" />
           <file role="data" name="datepicker_datetime.png" />
           <file role="data" name="datepicker_input.png" />
           <file role="data" name="mooeditable.png" />
+          <file role="data" name="slider.png" />
           <file role="data" name="string_validator.png" />
         </dir>
       </dir>
@@ -50,16 +54,24 @@
         </dir>
         <dir name="validator">
           <file role="data" name="sfEnhancedValidatorString.class.php" />
+          <file role="data" name="sfValidatorStringArray.class.php" />
         </dir>
         <dir name="vendor">
+          <dir name="Autocompleter" />
           <dir name="Datepicker" />
           <dir name="MooEditable" />
+          <dir name="mooRainbow" />
         </dir>
         <dir name="widget">
-		  <file role="data" name="BaseWidgetMooPicker.class.php" />
+		      <file role="data" name="BaseWidgetMooPicker.class.php" />
+          <file role="data" name="sfWidgetFormColourPicker.class.php" />
           <file role="data" name="sfWidgetFormDateMooPicker.class.php" />
           <file role="data" name="sfWidgetFormDateTimeMooPicker.class.php" />
+          <file role="data" name="sfWidgetFormInputChoice.class.php" />
+          <file role="data" name="sfWidgetFormInputAutocomplete.class.php" />
           <file role="data" name="sfWidgetFormInputDateTimeMooPicker.class.php" />
+          <file role="data" name="sfWidgetFormSlider.class.php" />
+          <file role="data" name="sfWidgetFormTextareaChoice.class.php" />
           <file role="data" name="sfWidgetFormTextareaMooEditable.class.php" />
         </dir>
       </dir>
@@ -69,6 +81,7 @@
         </dir>
         <dir name="unit">
           <file role="data" name="sfEnhancedValidatorStringTest.php" />
+          <file role="data" name="sfValidatorStringArrayTest.php" />
         </dir>
       </dir>
     </dir>
@@ -93,10 +106,10 @@
   <phprelease></phprelease>
   <changelog>
 	<release>
-  	  <date>2011-08-11</date>
-  	  <version>
-	    <release>1.0.0</release>
-	    <api>1.0.0</api>
+	  <date>2011-08-11</date>
+	  <version>
+    <release>1.0.0</release>
+    <api>1.0.0</api>
 	  </version>
 	  <stability>
 	    <release>stable</release>
@@ -106,10 +119,10 @@
 	  <notes>First release - see Github for full changesets</notes>
 	</release>
 	<release>
-  	  <date>2011-08-11</date>
-  	  <version>
-	    <release>1.0.1</release>
-	    <api>1.0.0</api>
+	  <date>2011-08-11</date>
+	  <version>
+    <release>1.0.1</release>
+    <api>1.0.0</api>
 	  </version>
 	  <stability>
 	    <release>stable</release>
@@ -119,10 +132,10 @@
 	  <notes>Updating images in README to work on symfony website</notes>
 	</release>
 	<release>
-  	  <date>2011-10-06</date>
-  	  <version>
-	    <release>1.1.0</release>
-	    <api>1.0.0</api>
+	  <date>2011-10-06</date>
+	  <version>
+    <release>1.1.0</release>
+    <api>1.0.0</api>
 	  </version>
 	  <stability>
 	    <release>stable</release>
@@ -131,5 +144,44 @@
 	  <license uri="https://github.com/HollerLondon/sfMooToolsFormExtraPlugin/blob/master/LICENSE">MIT license</license>
 	  <notes>Re-factored with a new base widget class for the date pickers, added option to include javascript with widget or in slot</notes>
 	</release>
+  <release>
+    <date>2012-05-15</date>
+    <version>
+    <release>1.2.0</release>
+    <api>1.0.0</api>
+    </version>
+    <stability>
+      <release>stable</release>
+      <api>stable</api>
+    </stability>
+    <license uri="https://github.com/HollerLondon/sfMooToolsFormExtraPlugin/blob/master/LICENSE">MIT license</license>
+    <notes>Added Colour Picker widget</notes>
+  </release>
+  <release>
+    <date>2012-05-16</date>
+    <version>
+    <release>1.3.0</release>
+    <api>1.0.0</api>
+    </version>
+    <stability>
+      <release>stable</release>
+      <api>stable</api>
+    </stability>
+    <license uri="https://github.com/HollerLondon/sfMooToolsFormExtraPlugin/blob/master/LICENSE">MIT license</license>
+    <notes>Added Autocompleter widget</notes>
+  </release>
+  <release>
+    <date>2012-06-27</date>
+    <version>
+    <release>1.4.0</release>
+    <api>1.0.0</api>
+    </version>
+    <stability>
+      <release>stable</release>
+      <api>stable</api>
+    </stability>
+    <license uri="https://github.com/HollerLondon/sfMooToolsFormExtraPlugin/blob/master/LICENSE">MIT license</license>
+    <notes>Added array validator and widgets; and slider widget</notes>
+  </release>
   </changelog>
 </package>

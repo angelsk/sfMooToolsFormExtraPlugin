@@ -20,6 +20,7 @@ class sfWidgetFormTextareaMooEditable extends sfWidgetFormTextarea
    *  * width:            The width of the editable area
    *  * height:           The height of the editable area
    *  * extratoolbar:     Any additional toolbar options - include | to separate
+   *  * use_slots:        Set javascript in a slot rather than rendering - see README
    *
    * @param array $options     An array of options
    * @param array $attributes  An array of default HTML attributes
@@ -32,7 +33,7 @@ class sfWidgetFormTextareaMooEditable extends sfWidgetFormTextarea
   	$this->addOption('height', sfConfig::get('app_mooeditable_default_height'));
     $this->addOption('config', sfConfig::get('app_mooeditable_default_config'));
     $this->addOption('extratoolbar', sfConfig::get('app_mooeditable_default_extra_toolbar'));
-    $this->addOption('use_slots',sfConfig::get('app_mooeditable_use_slots',false));
+    $this->addOption('use_slots', sfConfig::get('app_mooeditable_use_slots', false));
 
     parent::configure($options, $attributes);
   }
@@ -63,7 +64,8 @@ class sfWidgetFormTextareaMooEditable extends sfWidgetFormTextarea
     $('%s').mooEditable( { 
       dimensions: { x: %s, y: %s },
       actions: '%s | %s toggleview',
-      baseCSS: '%s'
+      baseCSS: '%s',
+      linksInNewWindow: true
       %s
     } );
   });
@@ -101,9 +103,9 @@ EOF
       $js[] = '/sfMooToolsFormExtraPlugin/js/MooEditable/MooEditable.CleanPaste.js';
     }
     
-    $extra_js = sfConfig::get('app_mooeditable_extra_js');
-    
-    if (!empty($extra_js)) $js += $extra_js;
+    $extra_js = sfConfig::get('app_mooeditable_extra_js',array());
+
+    if (!empty($extra_js)) $js = array_merge($js, $extra_js);
     
     return $js;
   }

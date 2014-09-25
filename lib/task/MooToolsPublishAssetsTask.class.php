@@ -26,7 +26,7 @@ class MooToolsPublishAssetsTask extends sfPluginBaseTask
     $this->briefDescription = 'Publishes web assets for the sfMooToolsFormExtraPlugin';
 
     $this->detailedDescription = <<<EOF
-The [mootools:publish-assets|INFO] task will publish web assets from the sfMooToolsFormExtraPlugin.
+The [mootools:publish-assets|INFO] task will (re)publish web assets from the sfMooToolsFormExtraPlugin.
 
   [./symfony mootools:publish-assets|INFO]
 EOF;
@@ -55,40 +55,50 @@ EOF;
     // Check the project first (as the plugin may contain stubs from the git submodules via the SVN bridge)
     $symfonyLibDir = sfConfig::get('sf_lib_dir').DIRECTORY_SEPARATOR.'vendor';
     
-    if (is_dir($symfonyLibDir.DIRECTORY_SEPARATOR.'Datepicker'))
+    $fileSystem = $this->getFilesystem();
+      
+    // create web dir for plugin + js and css dirs (will ignore if already created)
+    $jsDir = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.$plugin.DIRECTORY_SEPARATOR.'js';
+    $cssDir = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.$plugin.DIRECTORY_SEPARATOR.'css';
+    
+    $fileSystem->mkdirs($jsDir);
+    $fileSystem->mkdirs($cssDir);
+    
+    $this->logSection('plugin', sprintf('Configured %s directory in web folder, with appropriate structure', $plugin));
+    
+    // Go through all plugins - and link up those that exist
+    $pluginCount = 0;
+    $externals   = array('Datepicker' => '', 'MooEditable' => 'MooEditable', 'mooRainbow' => '', 'Autocompleter' => '');
+    
+    foreach ($externals as $external => $subDir)
     {
-      $libVendorDir = $symfonyLibDir;
-    }
-    else 
-    {
-      $libVendorDir = $dir.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'vendor';
-    }
+      if (is_dir($symfonyLibDir.DIRECTORY_SEPARATOR.$external))
+      {
+        $libVendorDir = $symfonyLibDir;
+      }
+      else 
+      {
+        $libVendorDir = $dir.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'vendor';
+      }
+        
+      $vendorDir = $libVendorDir.DIRECTORY_SEPARATOR.$external.DIRECTORY_SEPARATOR;
+      
+      // check vendor folder exist
+      if (is_dir($vendorDir.'Source') && is_dir($vendorDir.'Assets'))
+      {
+        // create symlinks inside
+        $this->getFilesystem()->relativeSymlink($vendorDir.'Source'.('' != $subDir ? DIRECTORY_SEPARATOR.$subDir : ''),                                      
+                                                $jsDir.DIRECTORY_SEPARATOR.$external, true);
+        
+        $this->getFilesystem()->relativeSymlink($vendorDir.'Assets'.('' != $subDir ? DIRECTORY_SEPARATOR.$subDir : ''),                                      
+                                                $cssDir.DIRECTORY_SEPARATOR.$external, true);
 
-    // check both vendor folders exist
-    if (is_dir($libVendorDir.DIRECTORY_SEPARATOR.'Datepicker'.DIRECTORY_SEPARATOR.'Source') && is_dir($libVendorDir.DIRECTORY_SEPARATOR.'MooEditable'.DIRECTORY_SEPARATOR.'Source'))
-    {
-      $fileSystem = $this->getFilesystem();
-      
-      // create web dir for plugin + js and css dirs
-      $jsDir = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.$plugin.DIRECTORY_SEPARATOR.'js';
-      $cssDir = sfConfig::get('sf_web_dir').DIRECTORY_SEPARATOR.$plugin.DIRECTORY_SEPARATOR.'css';
-      $fileSystem->mkdirs($jsDir);
-      $fileSystem->mkdirs($cssDir);
-      
-      // create symlinks inside
-      $this->getFilesystem()->relativeSymlink($libVendorDir.DIRECTORY_SEPARATOR.'Datepicker'.DIRECTORY_SEPARATOR.'Source',                                      
-                                              $jsDir.DIRECTORY_SEPARATOR.'Datepicker', true);
-      $this->getFilesystem()->relativeSymlink($libVendorDir.DIRECTORY_SEPARATOR.'MooEditable'.DIRECTORY_SEPARATOR.'Source'.DIRECTORY_SEPARATOR.'MooEditable',   
-                                              $jsDir.DIRECTORY_SEPARATOR.'MooEditable', true);
-      
-      $this->getFilesystem()->relativeSymlink($libVendorDir.DIRECTORY_SEPARATOR.'Datepicker'.DIRECTORY_SEPARATOR.'Assets',                                      
-                                              $cssDir.DIRECTORY_SEPARATOR.'Datepicker', true);
-      $this->getFilesystem()->relativeSymlink($libVendorDir.DIRECTORY_SEPARATOR.'MooEditable'.DIRECTORY_SEPARATOR.'Assets'.DIRECTORY_SEPARATOR.'MooEditable',   
-                                              $cssDir.DIRECTORY_SEPARATOR.'MooEditable', true);
-                                              
-      $this->logSection('plugin', 'Plugin configured');
+        $pluginCount++;
+        $this->logSection('plugin', 'Configured js and css for '. $external);
+      }
     }
-    else
+    
+    if (0 == $pluginCount)
     {
       $this->logSection('plugin', 'Please ensure you have set up approriate links in the lib/vendor folder as per the README', null, 'ERROR');
     }
